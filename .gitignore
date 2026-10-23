@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Configuración local
+.env
+.env.*
+!.env.example
+
+# Reportes generados
+reports/
+
+# Notas privadas
+mi-contexto.md
+Chilevision-Entrevista.md
