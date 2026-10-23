@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Aptia — inicio",
+    "url": "https://aptia.cl/",
+    "expected_host": "aptia.cl",
+    "expected_text": "Don Tata"
+  },
+  {
+    "name": "Aptia — privacidad",
+    "url": "https://aptia.cl/politica-de-privacidad.html",
+    "expected_host": "aptia.cl",
+    "expected_text": "Política de Privacidad"
+  },
+  {
+    "name": "Aptia — términos",
+    "url": "https://aptia.cl/terminos-de-uso.html",
+    "expected_host": "aptia.cl",
+    "expected_text": "Términos de Uso"
+  },
+  {
+    "name": "Weblift — inicio",
+    "url": "https://webliftagency.me/pages/home.html",
+    "expected_host": "webliftagency.me",
+    "expected_text": "Elevamos tu negocio"
+  },
+  {
+    "name": "Weblift — proyectos",
+    "url": "https://webliftagency.me/pages/proyectos.html",
+    "expected_host": "webliftagency.me",
+    "expected_text": "Portafolio"
+  }
+]
