@@ -1,120 +1,101 @@
 # Site Health Monitor Python
 
-Herramienta en Python para comprobar disponibilidad, detectar enlaces rotos y generar reportes de mantenimiento de sitios web.
+[![Tests](https://github.com/JpSiesquen/site-health-monitor-python/actions/workflows/tests.yml/badge.svg)](https://github.com/JpSiesquen/site-health-monitor-python/actions/workflows/tests.yml)
+![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 
-Primera versión por consola, sin dependencias externas. Comprueba páginas públicas
-de Aptia y Weblift y guarda reportes CSV y HTML con los resultados.
+Monitor HTTP por consola para verificar disponibilidad, destino final y contenido
+de páginas web. Genera reportes CSV y HTML por ejecución, sin dependencias externas.
 
-## Requisitos y ejecución
+Una respuesta HTTP 200 puede ocultar una redirección incorrecta o una página que
+perdió contenido. El monitor comprueba esas condiciones contra expectativas
+definidas por URL y registra cada fallo sin interrumpir las comprobaciones restantes.
 
-Python 3.12 o posterior. No hace falta instalar paquetes ni configurar claves.
-Desde la carpeta del proyecto:
+## Comprobaciones
 
-```powershell
+- **Respuesta HTTP:** exige estado 200 y clasifica errores del servidor y de conexión.
+- **Destino final:** detecta redirecciones a un hostname distinto del configurado.
+- **Contenido:** verifica un texto esperado en el HTML, excluyendo scripts y estilos.
+- **Tiempo y tamaño:** registra la duración de la petición, aplica un timeout por
+  operación de red y limita la lectura del cuerpo a 1 MB.
+
+La configuración incluida cubre cinco páginas públicas de [Aptia](https://aptia.cl/)
+y [Weblift Agency](https://webliftagency.me/).
+
+## Ejecución
+
+Requiere **Python 3.12 o posterior**.
+
+```bash
+git clone https://github.com/JpSiesquen/site-health-monitor-python.git
+cd site-health-monitor-python
 python monitor.py
 ```
 
-Si en Windows utilizas el lanzador de Python, puedes ejecutar `py -3 monitor.py`.
-También puedes usar `./run.cmd` desde PowerShell: intenta utilizar el lanzador
-`py` y, si no encuentra Python, el runtime de Codex cuando está disponible.
-No instala software ni cambia la configuración del sistema.
-Al terminar se muestran las rutas de los reportes. Abre el archivo HTML en tu
-navegador o el CSV en una hoja de cálculo. `reports/` no se publica en Git.
+Para seleccionar configuración, tiempo de espera y destino de los reportes:
 
-Opciones:
-
-```powershell
+```bash
 python monitor.py --config sites.json --timeout 10 --output reports
-python monitor.py --help
 ```
 
-El timeout se aplica a cada operación de red, no al tiempo total de la ejecución.
-Las páginas se consultan una a una. El programa no queda ejecutándose en segundo plano.
+En Windows también está disponible `py -3 monitor.py` o el lanzador `./run.cmd`.
+Este último utiliza el lanzador `py` o el runtime de Codex si está disponible.
 
-## Qué comprueba
-
-1. Realiza una petición GET y sigue las redirecciones HTTP.
-2. Comprueba que la respuesta sea HTTP 200 y termine en el dominio esperado.
-3. Lee como máximo 1 MB y busca un texto esperado, sin contar scripts o estilos.
-4. Registra el resultado, la URL final y el tiempo de conexión y lectura.
-5. Genera reportes CSV y HTML con nombre único y fecha UTC.
-
-Una página que responde 200 puede fallar la comprobación si muestra contenido
-equivocado. Un error en una página no impide comprobar las siguientes.
-
-## Configuración
-
-`sites.json` contiene una lista explícita de páginas. Por ejemplo:
+## Configuración por página
 
 ```json
 [
   {
-    "name": "Mi página",
-    "url": "https://example.com/",
-    "expected_host": "example.com",
-    "expected_text": "Example Domain"
+    "name": "Aptia — inicio",
+    "url": "https://aptia.cl/",
+    "expected_host": "aptia.cl",
+    "expected_text": "Don Tata"
   }
 ]
 ```
 
-`name` y `url` son obligatorios. Si omites `expected_host`, se utiliza el dominio
-de la URL original. `expected_text` es opcional; ignora mayúsculas y diferencias
-de espacios. `www.example.com` y `example.com` se consideran dominios diferentes.
-Si una redirección legítima termina en otro dominio, configúralo explícitamente.
-No incluyas credenciales ni información privada en las URLs o la configuración.
+`name` y `url` son obligatorios. `expected_host` toma por defecto el hostname de
+la URL original; `expected_text` es opcional. La búsqueda de texto normaliza
+espacios y mayúsculas. La configuración se valida antes de iniciar las peticiones.
 
-En Weblift se comprueban directamente las páginas de inicio y proyectos:
-la portada utiliza navegación con JavaScript, que este programa no ejecuta.
+## Reportes e integración
 
-## Resultados y códigos de salida
+Cada ejecución escribe un **CSV con los resultados** y un **HTML para revisión**
+en `reports/`. Los nombres incluyen fecha UTC y microsegundos para conservar el
+historial. Se registran página, URL original, fecha de consulta, resultado, estado
+HTTP, tiempo, URL final y diagnóstico.
 
-| Resultado | Significado |
+[CSV de una ejecución real](docs/examples/report.csv) ·
+[Reporte HTML de esa ejecución](docs/examples/report.html)
+
+El ejemplo corresponde al **23 de octubre de 2026**. Los resultados guardados
+describen esa ejecución, no el estado actual de los sitios.
+
+| Código de salida | Resultado |
 | --- | --- |
-| `OK` | HTTP 200, dominio y contenido esperado correctos. |
-| `HTTP_ERROR` | Error HTTP o respuesta final distinta de 200. |
-| `UNEXPECTED_HOST` | La respuesta termina en otro dominio. |
-| `CONTENT_MISSING` | Responde 200, pero falta el texto esperado en el HTML. |
-| `TIMEOUT` | Una operación de red excedió la espera configurada. |
-| `NETWORK_ERROR` | No fue posible conectar; por ejemplo, fallo DNS o TLS. |
-| `BODY_TOO_LARGE` | La respuesta supera el límite de 1 MB. |
-| `REQUEST_ERROR` | Otro problema de lectura o interpretación. |
+| `0` | Todas las comprobaciones correctas. |
+| `1` | Una o más páginas incumplen las condiciones esperadas. |
+| `2` | Configuración inválida o error al guardar reportes. |
 
-Códigos de salida: **0**, todas correctas; **1**, alguna comprobación falló;
-**2**, configuración inválida o error al guardar reportes. Esto permite integrar
-el programa posteriormente en otras herramientas.
+Los códigos de salida permiten incorporar la comprobación a scripts o pipelines.
+La [referencia técnica](docs/reference.md) detalla los estados, opciones y formato CSV.
 
-## Pruebas
+## Verificación
 
-```powershell
+```bash
 python -m unittest discover -s tests -v
 ```
 
-Las pruebas levantan un servidor HTTP local temporal. Comprueban respuestas válidas,
-redirecciones, errores 404/500, contenido incorrecto, timeout, tamaño máximo,
-reportes y códigos de salida. No necesitan conexión a Internet. GitHub Actions
-ejecuta estas pruebas, sin consultar las páginas en producción.
+La suite utiliza un servidor HTTP local para comprobar respuestas válidas,
+redirecciones, errores 404/500, contenido incorrecto, timeout, límite de lectura,
+generación de reportes y códigos de salida. GitHub Actions ejecuta las pruebas en
+Python 3.12; los tests no dependen de las webs en producción.
 
-## Estructura
+## Diseño y alcance
 
-```text
-monitor.py                    Lectura, peticiones y reportes
-run.cmd                       Lanzador opcional para Windows
-sites.json                    Páginas y expectativas configuradas
-tests/test_monitor.py         Pruebas con servidor local
-.github/workflows/tests.yml   Verificación automática
-reports/                      Resultados locales (ignorado por Git)
-```
+El flujo separa validación de configuración (`load_sites`), comprobación de páginas
+(`check_site`) y generación de reportes (`write_reports`). `Site` y `Result`
+definen los datos de entrada y salida; `main` coordina la ejecución secuencial.
 
-## Alcance y límites
-
-- Es una observación puntual; no calcula disponibilidad mensual ni certifica un sitio.
-- No ejecuta JavaScript, comprueba botones, envía formularios ni conversa con asistentes.
-- El tiempo medido no representa la carga visual ni las métricas de rendimiento de un navegador.
-- Todavía no descubre enlaces rotos ni revisa imágenes: comprueba las URLs configuradas.
-- No analiza la seguridad o la legalidad de las webs.
-- Se concibió para practicar Python con sitios propios y explicar cada decisión del código.
-
-## Próximos pasos
-
-Descubrir y comprobar enlaces internos, revisar imágenes, comparar ejecuciones
-y añadir comprobaciones de navegador si resultan necesarias.
+El monitor realiza comprobaciones puntuales sobre URLs explícitas y HTML estático.
+No ejecuta JavaScript, envía formularios ni descubre enlaces o imágenes. El tiempo
+registrado incluye conexión y lectura del cuerpo; no mide la carga visual en un navegador.

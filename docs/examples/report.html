@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Site Health Monitor — Reporte</title>
+<style>
+body{font:16px/1.5 system-ui,sans-serif;margin:0;background:#f3f5f7;color:#17212b}
+main{max-width:1200px;margin:40px auto;padding:24px;background:white;border-radius:12px}
+h1{margin-bottom:8px} .summary{font-size:22px;font-weight:600}
+.scroll{overflow-x:auto} table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:12px;text-align:left;border-bottom:1px solid #dde3e8;vertical-align:top}
+th{background:#edf1f5} td{overflow-wrap:anywhere} .ok td:nth-child(2){color:#17603c}
+.fail td:nth-child(2){color:#a32020;font-weight:bold} footer{margin-top:24px;color:#465362}
+</style></head><body><main>
+<h1>Site Health Monitor Python</h1>
+<p>Comprobación HTTP de páginas públicas · Fechas en UTC</p>
+<p class="summary">5 de 5 comprobaciones correctas</p>
+<p>Inicio: 2026-10-23T23:26:24+00:00</p>
+<div class="scroll"><table><thead><tr>
+<th>Página</th><th>Resultado</th><th>HTTP</th><th>Tiempo (ms)</th><th>Destino final</th><th>Detalle</th>
+</tr></thead><tbody><tr class="ok"><td>Aptia — inicio</td><td>OK</td><td>200</td><td>4348</td><td>https://aptia.cl/</td><td>Respuesta correcta.</td></tr><tr class="ok"><td>Aptia — privacidad</td><td>OK</td><td>200</td><td>1872</td><td>https://aptia.cl/politica-de-privacidad.html</td><td>Respuesta correcta.</td></tr><tr class="ok"><td>Aptia — términos</td><td>OK</td><td>200</td><td>435</td><td>https://aptia.cl/terminos-de-uso.html</td><td>Respuesta correcta.</td></tr><tr class="ok"><td>Weblift — inicio</td><td>OK</td><td>200</td><td>479</td><td>https://webliftagency.me/pages/home.html</td><td>Respuesta correcta.</td></tr><tr class="ok"><td>Weblift — proyectos</td><td>OK</td><td>200</td><td>322</td><td>https://webliftagency.me/pages/proyectos.html</td><td>Respuesta correcta.</td></tr></tbody></table></div>
+<footer>Una ejecución es una observación puntual, no una garantía de disponibilidad.
+El tiempo incluye conexión y lectura del HTML. No se ejecuta JavaScript ni se envían formularios.</footer>
+</main></body></html>

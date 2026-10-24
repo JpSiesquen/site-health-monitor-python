@@ -1,4 +1,4 @@
-"""Comprueba páginas públicas y genera reportes. Solo usa la biblioteca estándar."""
+"""Verificación HTTP de disponibilidad, destino y contenido con reportes CSV/HTML."""
 
 import argparse
 import csv
@@ -178,8 +178,8 @@ th{{background:#edf1f5}} td{{overflow-wrap:anywhere}} .ok td:nth-child(2){{color
 <div class="scroll"><table><thead><tr>
 <th>Página</th><th>Resultado</th><th>HTTP</th><th>Tiempo (ms)</th><th>Destino final</th><th>Detalle</th>
 </tr></thead><tbody>{''.join(table_rows)}</tbody></table></div>
-<footer>Una ejecución es una observación puntual, no una garantía de disponibilidad.
-El tiempo incluye conexión y lectura del HTML. No se ejecuta JavaScript ni se envían formularios.</footer>
+<footer>Comprobación puntual de respuesta HTTP y HTML estático.
+El tiempo incluye conexión y lectura del cuerpo, no la carga visual de la página.</footer>
 </main></body></html>"""
     html_path.write_text(document, encoding="utf-8")
     return csv_path, html_path

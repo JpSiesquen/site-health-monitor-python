@@ -1,0 +1,6 @@
+﻿name,url,checked_at_utc,status,http_status,elapsed_ms,final_url,detail
+Aptia — inicio,https://aptia.cl/,2026-10-23T23:26:24+00:00,OK,200,4348,https://aptia.cl/,Respuesta correcta.
+Aptia — privacidad,https://aptia.cl/politica-de-privacidad.html,2026-10-23T23:26:28+00:00,OK,200,1872,https://aptia.cl/politica-de-privacidad.html,Respuesta correcta.
+Aptia — términos,https://aptia.cl/terminos-de-uso.html,2026-10-23T23:26:30+00:00,OK,200,435,https://aptia.cl/terminos-de-uso.html,Respuesta correcta.
+Weblift — inicio,https://webliftagency.me/pages/home.html,2026-10-23T23:26:30+00:00,OK,200,479,https://webliftagency.me/pages/home.html,Respuesta correcta.
+Weblift — proyectos,https://webliftagency.me/pages/proyectos.html,2026-10-23T23:26:31+00:00,OK,200,322,https://webliftagency.me/pages/proyectos.html,Respuesta correcta.
